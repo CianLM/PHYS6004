@@ -1,17 +1,175 @@
 \lecture{2}{03/03/2023}{Path Integral Formalism}
 
 This lecture and accompanying notes follow closely LeBellac Chapter 8.
+- Cian
 
+\subsection{Ising Model Example}
+
+Consider a single spin-$\frac{1}{2}$ system with Hamiltonian
+\begin{align*}
+    H &= -J \sigma_x \\
+      &= -J \mqty( 0 & 1 \\ 1 & 0)
+,\end{align*}
+which has eigenstates
+\begin{align*}
+    \ket{0} = \frac{1}{\sqrt{2} } \mqty( 1 \\ 1 ) && \ket{1} = \frac{1}{\sqrt{2} } \mqty( 1 \\ - 1)
+,\end{align*}
+with eigenvalues $E_0 = -J$ and $E_1 = J$.
+
+\begin{definition}
+    We define the matrix element of the evolution operator $U(t) = \exp \left( -i H t \right) $ by
+    \begin{align*}
+        F\left(t,S_b  \mid 0, S_a  \right) = \bra{S_b} e^{-i H t} \ket{S_a}
+    ,\end{align*}
+    where $\ket{S_i}$ are eigenstates of $\sigma_z = \mqty( 1 & 0 \\ 0 & -1)$, (with eigenvalues $S_i = \pm 1$) but in general could be arbitrary states. This matrix element represents the probability amplitude to observe $S_b$ at time $t$ given that the system was in state $S_a$ at $t = 0$.
+\end{definition}
+
+Next, note that as $\{\ket{S_a}, \ket{S_b}\} $ spans the Hilbert space (i.e. they form a complete basis), we can write
+\begin{align*}
+    \mathbb{I} = \sum_{S_i=\pm 1}^{} \ket{S_i} \bra{S_i}
+.\end{align*}
+\begin{note}
+    While this expression may be familiar, it is interesting to notice that the $\bra{S_i}$ can be considered projection operators onto the state $\ket{S_i}$. For example, in 2D, one may project onto the $x$ and $y$ axes and rewrite the state as $\phi = \left( \hat{x}P_x + \hat{y} P_y \right) \phi$ where $P_x$ is a projection operator and $\hat{x}$ here is analogous to a ket.
+\end{note}
+
+Supposing that $t = N \gg 1$, we can insert an identity operator at every  integer $t$ by splitting the evolution operator into $N$ time steps such that
+\begin{align*}
+    \bra{S_b} e^{-i H t} \ket{S_a} &= \bra{S_b} e^{-iH}\mathbb{I} \cdots \mathbb{I} e^{-iH} \ket{S_a} \\
+    &=  \sum_{S_1=\pm 1}^{} \cdots \sum_{S_{N-1}=\pm 1}^{} \bra{S_b} e^{-i H t} \ket{S_{N-1}} \\
+                                   &\left( \prod_{i=N-1}^{2} \bra{S_{i}} e^{-iH} \ket{S_{i-1}} \right) \bra{S_1} e^{-iH} \ket{S_a}
+.\end{align*}
+
+Then, we take
+\begin{align*}
+    \bra{S} e^{-iH} \ket{S'} = e^{-i V\left( S,S' \right) }
+,\end{align*}
+which allows us to write
+\begin{align*}
+    \bra{S_b} e^{-iH} \ket{S_a} = \sum_{[S_i]} \exp \left( -i \left( V\left( S_b, S_{N-1} \right) +  \sum_{i=N-1}^{2} V\left( S_i, S_{i-1} \right) + V\left( S_1, S_a \right)  \right)   \right) 
+.\end{align*}
+
+Now, if we take the time to be imaginary with $t = -i \tau$, then the matrix element becomes
+\begin{align*}
+    \bra{S_b} e^{-H \tau} \ket{S_a} &= \sum_{[S_i]} \exp \left(  V\left( S_b, S_{N-1} \right) +  \sum_{i=N-1}^{2} V\left( S_i, S_{i-1} \right) + V\left( S_1, S_a \right)  \right)
+.\end{align*}
+
+Observe that
+\begin{align*}
+    e^{-H} &= e^{J \sigma_1}  \\
+    &= \sum_{n =1}^{\infty} \frac{1}{n!} \\
+    = \mqty( \cosh J & \sinh J \\ \sinh J & \cosh J)
+,\end{align*}
+where if we take
+\begin{align*}
+    Z_N &= \sum_{[S_i]}^{} e^{-H} \\
+    \intertext{we see that it equals}
+    &= \tr e^{-i H \tau}
+.\end{align*}
+
+Namely, the partition function of the quantum spin system is equal to that of a classical $N$ spin system.
+
+\subsection{Path Integral Derivation}
+
+Consider now a particle evolving according to general $H$ with probability amplitude now given by
+\begin{align*}
+    F\left( q', t' \mid q, t \right) &= \bra{q', t'} \ket{q, t} \\
+    &= \bra{q'} e^{-i H \left( t' - t \right) } \ket{q}
+.\end{align*}
+As before we subdivide the time interval into n intervals of length $\epsilon = \left( t' -t \right)/n$ and we specify
+\begin{align*}
+    H\left( t' - t \right) = n\epsilon \left( \frac{\hat{p}^2}{2m} + V\left( q \right)  \right) 
+.\end{align*}
+
+We can then insert complete sets of eigenstates $\{\ket{q_{i}}\} $ as identity operators yielding
+\begin{align*}
+    F\left( q',t'  \mid q,t \right) = \int \left( \prod_{l = 1}^{n} \dd{q_i} \right)  \prod_{l = 0}^{n}  \bra{q_{l+1}}\exp \left( -i\epsilon \left( \frac{\hat{p}^2}{2m} \right) \right) \exp \left( -i\epsilon V\left( \hat{q} \right)  \right)  \ket{q_l} 
+.\end{align*}
+
+The matrix element of interest simplifies to
+\begin{align*}
+    &= \exp \left( -i \epsilon V\left( q_l \right)  \right) \bra{q_{l + 1}} \exp \left( -i \epsilon \frac{\hat{p}^2}{2m} \right) \ket{q_l}   \\
+    &= \exp \left( -i \epsilon V\left( q_l \right)  \right) \int \frac{\dd{p_l}}{2\pi} \bra{q_{l + 1}} \exp \left( -i \epsilon \frac{\hat{p}^2}{2m} \right) \ket{p_l} \bra{p_l} \ket{q_l}   \\
+    &= \exp \left( -i \epsilon V\left( q_l \right)  \right) \int \frac{\dd{p_l}}{2\pi}  \exp \left( -i \epsilon \frac{p_l^2}{2m} \right) \bra{q_{l + 1}}\ket{p_l} \bra{p_l} \ket{q_l}   \\
+    \intertext{where $\bra{p_l} \ket{q_l} = \frac{1}{2\pi}e^{-i q_l p_l}$ yields}
+    &= \exp \left( -i \epsilon V\left( q_l \right)  \right) \int \frac{\dd{p_l}}{2\pi}  \exp \left( -i \epsilon \frac{p_l^2}{2m} \right) \exp \left( i \left( q_{l+1} - q_l \right) p_l \right)
+.\end{align*}
+
+Returning this matrix element to the probability amplitude expression, we see that
+\begin{align*}
+    F\left( q',t'  \mid q,t \right) = \int \left( \prod_{l = 1}^{n} \dd{q_i} \right)  \prod_{l = 0}^{n} \int \frac{\dd{p_l}}{2\pi} \exp \left( -i \epsilon \left( V\left( q_l \right) + \frac{p_l^2}{2m} \right)  \right) \exp \left( i \left( q_{l+1} - q_l \right) p_l \right)
+.\end{align*}
+
+As $V$ is independent of $p_l$, we can integrate over $p_l$ and obtain
+\begin{align*}
+    F\left( q', t'  \mid q,t \right) &= \lim_{\epsilon \to 0} \left( -i\frac{m}{2 \pi \epsilon} \right)^{\frac{1}{2}} \int \left( \prod_{l = 1}^{n} \left( -i\frac{m}{2\pi \epsilon} \right)^{\frac{1}{2}} \dd{q_l}  \right)  \exp \left( i \sum_{l=0}^{n} \epsilon\frac{m \left( q_l - q_{l+1} \right)^2}{2 \epsilon^2} - \epsilon V \left( q_l \right)  \right)  \\
+    \intertext{Where in the limit of $\epsilon \to 0$,}
+    F\left( q', t'  \mid q,t \right) &= \int \mathcal{D}q  \exp \left( i \int_t^{t'} \frac{1}{2}m \dot{q}^2 - V\left( q \right) \right) \\
+    F\left( q', t'  \mid q,t \right) &= \int \mathcal{D}q  \exp \left( i S \right)
+,\end{align*}
+and we have denoted the integration measure by
+\begin{align*}
+    \mathcal{D}q = \left( -i\frac{m}{2\pi \epsilon} \right)^{\frac{1}{2}} \prod_{l = 1}^{n} \left( -i\frac{m}{2\pi \epsilon} \right)^{\frac{1}{2}} \dd{q_l}
+.\end{align*}
+we arrive at the desired path integral expression. Namely, this equation states that it is through summing over all possible paths the particle can take, weighted by their action, that we obtain the amplitude for a given process. The weighting by the action ensures that unlikely paths contribute negligibly (in fact the fast rotation of the action in the complex plane means they cancel themselves). On the other hand paths close to the classical equation of motion (which is stationary with respect to the action) will add constructively and thus contribute measurably to the probability amplitude of the process.
+
+\begin{note}
+    We can then analogously obtain matrix elements of time ordered products such that
+    \begin{align*}
+        \bra{q', t'} T Q\left( t_1 \right) Q \left( t_2 \right) \ket{q,t} = \int \mathcal{D}q q\left( t_1 \right) q\left( t_2 \right) e^{iS}
+    ,\end{align*}
+    namely such that $t_1 > t_2$.
+\end{note}
 
 \subsection{Functional Derivatives}
+\begin{definition}
+    Given a functional $F : M \to \R$ where $M$ is some space (manifold), we have that the functional derivative with respect to  some function $\rho$ is given by
+     \begin{align*}
+        \int \frac{\delta F}{\delta \rho\left( x \right) } \phi \left( x \right) \dd{x} &= \lim_{\epsilon \to 0} \frac{F\left[ \rho + \epsilon \phi \right] - F \left[ \rho \right] }{\epsilon} \\
+                                                                                        &= \left[ \dv{\epsilon} F\left[ \rho + \epsilon \phi \right]  \right]_{\epsilon = 0}
+    .\end{align*}
+    One can consider the functional derivative as the gradient of $F$ at the point $\rho$ in function space in the direction of $\phi$.
+\end{definition}
 
+\begin{examples}
+    Given
+    \begin{align*}
+        F\left[ \phi \left( x \right)  \right] = e^{\int \phi \left( x \right) g \left( x \right) \dd{x}}
+    ,\end{align*}
+    the functional derivative with $\phi = \delta \left( x -y \right) $ is
+    \begin{align*}
+        \frac{\delta F \left[ \phi \left( x \right)  \right] }{\delta\phi \left( y \right) } &= \frac{\delta F \left[ \phi \left( x \right) + \epsilon \delta \left( x -y \right)  \right] - F\left[ \phi \left( x \right)  \right] }{\epsilon} \\
+        &= \lim_{\epsilon \to 0} \frac{e^{\int \left( \phi \left( x \right)  + \epsilon \delta \left( x -y \right)  \right) g \left( x \right) \dd{x}} e^{\int \phi \left( x \right)  g\left( x \right) \dd{x}}}{\epsilon}  \\
+        &= e^{\int \phi \left( x \right) g\left( x \right) \dd{x} } \lim_{\epsilon \to 0} \frac{e^{\epsilon \int \delta \left( x -y \right) g\left( x \right) \dd{x}} - 1}{\epsilon} \\
+        &= e^{\int \phi \left( x \right) g\left( x \right) \dd{x} } \lim_{\epsilon \to 0} \frac{e^{\epsilon g\left( y \right) } - 1}{\epsilon} \\
+        &= g\left( y \right) F\left[ \phi \left( x \right)  \right] 
+    .\end{align*}
+
+\end{examples}
 
 \subsection{Generating Functional}
 
+We modify the Lagrangian to include a source term
+\begin{align*}
+    L = \frac{1}{2}m\dot{q}^2 - V\left( q \right) + j\left( t \right) q\left( t \right) 
+,\end{align*}
+which results in an external force $j\left( t \right) $ which we take to be nonzero on $\left[ t,t' \right] $.
 
+We define the generating functional
+\begin{align*}
+    Z\left( y \right) &= \lim_{T \to i \infty, T' \to -i\infty} \frac{\bra{Q',T'}\ket{Q,T}}{e^{-i E_0 \left( T' - T \right) }\phi_0^{*} \phi_0 \left( Q' \right) }\\
+    Z\left( j \right) &= \int \dd{q} \dd{q'} \phi_0^{*}\left( q',t' \right) \bra{q', t'} \ket{q,t} \phi_0 \left( q,t \right)  \\
+    Z\left( j \right) = \bra{0} e^{i Ht'} U_j \left( t',t \right) e^{-i H t} \ket{0}
+,\end{align*}
+with $U_j$ satisfying
+\begin{align*}
+    i \dv{U_j}{t} = \left( H - j\left( t \right) Q \right) U_j \left( t \right)
+.\end{align*}
 
-
-
-\subsection{Wick's Theorem (pg. 331)}
-
-
+Writing the matrix elements as a path integral we have
+\begin{align*}
+    Z\left( j \right) = \mathcal{N} \lim_{T^{\left( ' \right) } \to \pm i\infty} \int \mathcal{D}q \exp \left( i \int_T^{T'} \left( L\left( q,\dot{q} \right) + j \left( t \right) q\left( t \right)  \right)  \right) 
+,\end{align*}
+where by using the result derived in the example above, the functional derivative gives
+\begin{align*}
+    \bra{0} T \left( Q\left( t_1 \right) Q\left( t_2 \right)  \right)  \ket{0} &= \frac{\left( -i \right)^2}{Z\left( 0 \right) } \dv[2]{Z\left( j \right) }{j\left( t_1 \right)}{j\left( t_2 \right) } \bigg|_{j = 0} \\
+.\end{align*}
